@@ -35,6 +35,18 @@ def login():
     else:
         return render_template("login.html")
 
+@main.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for("main.login"))
+
 @main.route("/home")    
+@login_required
 def home():
     return render_template("index.html")
+
+def status_401(error):
+    return redirect(url_for("main.login"))
+
+def status_404(error):
+    return "<h1>Page Not Found</h1>", 404
