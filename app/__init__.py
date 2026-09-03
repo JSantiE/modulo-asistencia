@@ -13,9 +13,11 @@ def create_app():
     login_manager.init_app(app)
     
     #Registrar rutas
-    from app.routes.main import main, status_401, status_404
-    
+    from app.routes.auth import auth, status_401, status_404
+    from app.routes.main import main
+        
     app.register_blueprint(main)
+    app.register_blueprint(auth)
     app.register_error_handler(401, status_401)
     app.register_error_handler(404, status_404)
     
