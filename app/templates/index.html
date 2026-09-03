@@ -1,10 +1,10 @@
 {% extends "layout.html" %}
 
-{% block title %}{{data.title}}{% endblock %}
+{% block title %}Home{% endblock %}
 
 {% block body %}
 
-    <h1>{{data.message}}</h1>
+    <h1>Bienvenido, {{ current_user.username }}!!!</h1>
 
 {% endblock %}
 

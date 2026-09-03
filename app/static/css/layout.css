@@ -11,3 +11,95 @@ h1{
 body{
     background-color: whitesmoke;
 }
+
+.grupo-formulario {
+    width: 100%;
+    max-width: 500px;
+    box-sizing: border-box;
+
+    padding: 20px;
+    margin: 20px auto;
+
+    border: 1px solid #aaa;
+    border-radius: 8px;
+}
+
+.grupo-formulario legend {
+    padding: 0 10px;
+
+    font-weight: bold;
+}
+
+/* Campos de texto */
+
+.campo {
+    display: flex;
+    align-items: center;
+
+    margin-bottom: 12px;
+}
+
+.campo label {
+    width: 120px;
+}
+
+.campo input[type="text"] {
+    width: 100%;
+    max-width: 250px;
+
+    padding: 6px 8px;
+    box-sizing: border-box;
+
+    border: 1px solid #aaa;
+    border-radius: 4px;
+}
+
+.campo input[type="password"] {
+    width: 100%;
+    max-width: 250px;
+
+    padding: 6px 8px;
+    box-sizing: border-box;
+
+    border: 1px solid #aaa;
+    border-radius: 4px;
+}
+
+/*button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}*/
+
+.div-cifrado{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.contenedor-tabla {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.contenedor-tabla table {
+    white-space: nowrap;
+}
+
+table {
+    border-collapse: collapse;
+    margin: 20px auto;
+}
+
+th{
+    border: 1px solid black;
+    padding: 10px;
+    text-align: center;
+}
+
+td {
+    border: 1px solid black;
+    padding: 8px 12px;
+    text-align: center;
+}
