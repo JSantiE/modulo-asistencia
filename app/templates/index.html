@@ -4,8 +4,8 @@
 
 {% block body %}
 
-    <h1>Bienvenido, {{ current_user.username }}!!!</h1>
-    <a class="btn btn-secondary" href="{{ url_for('main.logout') }}">Cerrar sesión</a>
+    <h1>Bienvenido, {{ current_user.full_name }}!!!</h1>
+    <a class="btn btn-secondary" href="{{ url_for('auth.logout') }}">Cerrar sesión</a>
 {% endblock %}
 
 {% block scripts %}
