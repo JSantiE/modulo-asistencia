@@ -14,11 +14,11 @@ def load_user(user_id):
 def login():
     
     if request.method == "POST":
-        user = Usuario(0, request.form["username"], request.form["password"])
+        user = Usuario(0, request.form["username"], request.form["password"], None)
         logged_usuer = UsuarioService.login(user)
         
         if logged_usuer != None:
-            if logged_usuer.password:
+            if logged_usuer.password_hash:
                 login_user(logged_usuer)
                 return redirect(url_for("auth.home"))
             else:
