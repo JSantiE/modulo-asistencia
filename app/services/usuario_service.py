@@ -13,7 +13,7 @@ class UsuarioService():
                 row = cursor.fetchone()
                 
                 if row != None:
-                    user = Usuario(row[0], row[1], Usuario.check_password(row[2], user.contrasena_hash), row[3])
+                    user = Usuario(row[0], row[1], Usuario.check_password(row[2], user.contrasena_hash), row[3], None, None, None, None, None)
                     return user
                 else:
                     return None
@@ -25,12 +25,12 @@ class UsuarioService():
         try:
             connection = get_connection()
             with connection.cursor() as cursor:
-                query = "SELECT id, usuario, nombres FROM usuario WHERE id = '{}'".format(user_id)
+                query = "SELECT id, usuario, nombres, empresa_id, perfil_id FROM usuario WHERE id = '{}'".format(user_id)
                 cursor.execute(query)
                 row = cursor.fetchone()
                 
                 if row != None:
-                    return Usuario(row[0], row[1], None, row[2])
+                    return Usuario(row[0], row[1], None, row[2], row[3], None, None, row[4], None)
                 else:
                     return None
         except Exception as ex:
