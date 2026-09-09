@@ -18,7 +18,7 @@ def login():
         logged_usuer = UsuarioService.login(user)
         
         if logged_usuer != None:
-            if logged_usuer.password_hash:
+            if logged_usuer.contrasena_hash:
                 login_user(logged_usuer)
                 return redirect(url_for("auth.home"))
             else:
