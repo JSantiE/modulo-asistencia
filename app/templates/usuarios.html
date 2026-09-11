@@ -24,8 +24,8 @@
                         <td>{{ usuario[3] }}</td>
                         <td>{{ usuario[4] }}</td>
                         <td>
-                            <a href="#" class="btn btn-primary">Editar</a>
-                            <a href="#" class="btn btn-danger">Eliminar</a>
+                            <button class="btn btn-primary" onclick="editarUsuario(this)">Editar</button>
+                            <button class="btn btn-danger" onclick="eliminarUsuario(this)">eliminar</button>
                         </td>
                     </tr>
                 {% endfor %}
@@ -33,10 +33,66 @@
         </table>
     </div>
 
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Datos del Usuario</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Apellido Paterno:</label>
+                        <input type="text" class="form-control" id="apellido-paterno">
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Apellido Materno:</label>
+                        <input type="text" class="form-control" id="apellido-materno">
+                    </div>
+                    <div>
+                        <label for="message-text" class="col-form-label">Nombres:</label>
+                        <input type="text" class="form-control" id="nombres">
+                    </div>
+                    <div>
+                        <label for="message-text" class="col-form-label">Perfil:</label>
+                        <select class="form-select" aria-label="Default select example">
+                            <option selected>Open this select menu</option>
+                            {% for perfil in perfiles %}
+                                <option value="{{ perfil[0] }}">{{ perfil[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Send message</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 
 {% block scripts %}
     <script>
+        function editarUsuario(button) {
+            var row = button.closest('tr');
+            var usuarioId = row.cells[0].textContent;
+            
+            const elementoModal = document.getElementById('exampleModal');
+            const miModal = bootstrap.Modal.getOrCreateInstance(elementoModal);
+
+            miModal.show();
+        }
+
+        function eliminarUsuario(button) {
+            var row = button.closest('tr');
+            var usuarioId = row.cells[0].textContent;
+            
+            alert("Eliminar usuario con ID: " + usuarioId);
+        }
 
     </script>
 {% endblock %}
