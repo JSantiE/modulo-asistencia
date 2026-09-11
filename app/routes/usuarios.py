@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from app.models.usuario import Usuario
 from app.services.usuario_service import UsuarioService
+from app.services.perfil_service import PerfilService
 
 usuarios = Blueprint('usuarios', __name__)
 
@@ -10,13 +11,13 @@ usuarios = Blueprint('usuarios', __name__)
 def list():
     try:
         empresa_id = current_user.empresa_id
-        perfil_id = current_user.perfil_id
+        perfil_id = 0 #current_user.perfil_id
         usuarios_list = UsuarioService.list_users(empresa_id, perfil_id)
+        perfiles_list = PerfilService.list_perfiles(empresa_id)
         
-        return render_template('usuarios.html', usuarios=usuarios_list)
+        return render_template('usuarios.html', usuarios=usuarios_list, perfiles=perfiles_list)
     except Exception as ex:
-        return render_template('usuarios.html', usuarios=[])
-    
+        return render_template('usuarios.html', usuarios=[], perfiles=[])
 def create():
     if request.method == 'POST':
         try:

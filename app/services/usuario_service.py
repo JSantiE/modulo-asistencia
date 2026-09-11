@@ -8,12 +8,12 @@ class UsuarioService():
         try:
             connection = get_connection()
             with connection.cursor() as cursor:
-                query = "SELECT id, usuario, contrasena_hash, nombres FROM usuario WHERE usuario = '{}'".format(user.usuario)
-                cursor.execute(query)
+                #query = "SELECT id, usuario, contrasena_hash, nombres FROM usuario WHERE usuario = '{}'".format(user.usuario)
+                cursor.callproc('sp_login_user', (user.usuario,))
                 row = cursor.fetchone()
                 
                 if row != None:
-                    user = Usuario(row[0], row[1], Usuario.check_password(row[2], user.contrasena_hash), row[3], None, None, None, None, None)
+                    user = Usuario(row[0], row[1], Usuario.check_password(row[2], user.contrasena_hash), row[3])
                     return user
                 else:
                     return None
@@ -25,12 +25,11 @@ class UsuarioService():
         try:
             connection = get_connection()
             with connection.cursor() as cursor:
-                query = "SELECT id, usuario, nombres, empresa_id, perfil_id FROM usuario WHERE id = '{}'".format(user_id)
-                cursor.execute(query)
+                cursor.callproc('sp_get_user_by_id', (user_id,))
                 row = cursor.fetchone()
                 
                 if row != None:
-                    return Usuario(row[0], row[1], None, row[2], row[3], None, None, row[4], None)
+                    return Usuario(row[0], row[1], None, row[2], row[3], None, None, row[4], row[5])
                 else:
                     return None
         except Exception as ex:
