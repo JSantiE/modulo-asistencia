@@ -29,7 +29,7 @@ class UsuarioService():
                 row = cursor.fetchone()
                 
                 if row != None:
-                    return Usuario(row[0], row[1], None, row[2], row[3], None, None, row[4], row[5])
+                    return Usuario(row[0], row[1], None, row[2], row[3], row[4], row[5], row[6], row[7])
                 else:
                     return None
         except Exception as ex:
@@ -83,4 +83,14 @@ class UsuarioService():
                 return cursor.rowcount
         except Exception as ex:
             raise Exception(f"Error al actualizar el usuario: {ex}")
-    
+        
+    @classmethod
+    def delete_user(self, user_id, empresa_id):
+        try:
+            connection = get_connection()
+            with connection.cursor() as cursor:
+                cursor.callproc('sp_delete_usuario', (user_id, empresa_id))
+                connection.commit()
+                return cursor.rowcount
+        except Exception as ex:
+            raise Exception(f"Error al eliminar el usuario: {ex}")
