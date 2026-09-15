@@ -17,3 +17,14 @@ class Usuario(UserMixin):
     @classmethod
     def check_password(self, hashed_password, password):
         return check_password_hash(hashed_password, password)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'empresa_id': self.empresa_id,
+            'apellido_paterno': self.apellido_paterno,
+            'apellido_materno': self.apellido_materno,
+            'nombres': self.nombres,
+            'contrasena_hash': self.contrasena_hash,
+            'perfil_id': self.perfil_id
+        }
