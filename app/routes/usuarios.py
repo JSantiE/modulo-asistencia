@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, make_response, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 from app.models.usuario import Usuario
 from app.services.usuario_service import UsuarioService
@@ -18,6 +18,7 @@ def list():
         return render_template('usuarios.html', usuarios=usuarios_list, perfiles=perfiles_list)
     except Exception as ex:
         return render_template('usuarios.html', usuarios=[], perfiles=[])
+
 def create():
     if request.method == 'POST':
         try:
@@ -27,3 +28,15 @@ def create():
         except Exception as ex:
             return render_template('usuario_form.html', data=data)
     return render_template('usuario_form.html', data={})
+
+@usuarios.route('/usuarios/get_user', methods=['POST'])
+def get_user():
+    req = request.get_json()
+    user = UsuarioService.get_user_by_id(int(req.get('id')))
+    return make_response(jsonify({"user": user.to_dict()}), 200)
+
+@usuarios.route('/usuarios/delete', methods=['POST'])
+def delete():
+    req = request.get_json()
+    user = UsuarioService.delete_user(int(req.get('id')), current_user.empresa_id)
+    return render_template('usuarios.html')
