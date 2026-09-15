@@ -25,7 +25,7 @@
                         <td>{{ usuario[4] }}</td>
                         <td>
                             <button class="btn btn-primary" onclick="editarUsuario(this)">Editar</button>
-                            <button class="btn btn-danger" onclick="eliminarUsuario(this)">eliminar</button>
+                            <button class="btn btn-danger" onclick="eliminarUsuario(this)">Eliminar</button>
                         </td>
                     </tr>
                 {% endfor %}
@@ -56,7 +56,7 @@
                     </div>
                     <div>
                         <label for="message-text" class="col-form-label">Perfil:</label>
-                        <select class="form-select" aria-label="Default select example">
+                        <select class="form-select" aria-label="Default select example" id="perfil-select">
                             <option selected>Open this select menu</option>
                             {% for perfil in perfiles %}
                                 <option value="{{ perfil[0] }}">{{ perfil[1] }}</option>
@@ -66,8 +66,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Send message</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary">Modificar</button>
             </div>
             </div>
         </div>
@@ -81,6 +81,24 @@
             var row = button.closest('tr');
             var usuarioId = row.cells[0].textContent;
             
+            fetch("/usuarios/get_user",{
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ id: usuarioId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('apellido-paterno').value = data.user.apellido_paterno;
+                document.getElementById('apellido-materno').value = data.user.apellido_materno;
+                document.getElementById('nombres').value = data.user.nombres;
+                document.getElementById('perfil-select').value = data.user.perfil_id;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
             const elementoModal = document.getElementById('exampleModal');
             const miModal = bootstrap.Modal.getOrCreateInstance(elementoModal);
 
@@ -91,7 +109,27 @@
             var row = button.closest('tr');
             var usuarioId = row.cells[0].textContent;
             
-            alert("Eliminar usuario con ID: " + usuarioId);
+            if (confirm("¿Está seguro de que desea eliminar este usuario?")) {
+                fetch("/usuarios/delete", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ id: usuarioId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    /*if (data.success) {
+                        row.remove();
+                        alert("Usuario eliminado correctamente.");
+                    } else {
+                        alert("Error al eliminar el usuario.");
+                    }*/
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
         }
 
     </script>
