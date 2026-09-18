@@ -3,9 +3,17 @@
 {% block title %}Home{% endblock %}
 
 {% block body %}
-
-    <h1>Bienvenido, {{ current_user.nombres }}!!!</h1>
-    <a class="btn btn-secondary" href="{{ url_for('auth.logout') }}">Cerrar sesión</a>
+    <nav>
+        <ul>
+            {% for menu in menus %}
+                <li>
+                    <a href="{{ menu.ruta }}">
+                        {{ menu.menu }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </nav>
 {% endblock %}
 
 {% block scripts %}

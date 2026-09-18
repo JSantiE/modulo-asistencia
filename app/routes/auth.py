@@ -1,5 +1,5 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
-from flask_login import login_user, logout_user, login_required
+from flask_login import current_user, login_user, logout_user, login_required
 from app.models.usuario import Usuario
 from app.services.usuario_service import UsuarioService
 from app import login_manager
@@ -23,10 +23,10 @@ def login():
                 return redirect(url_for("auth.home"))
             else:
                 flash("Contraseña incorrecta", "danger")
-                return render_template("login.html")        
+                return render_template("login.html")
         else:
             flash("Usuario no encontrado", "danger")
-            return render_template("login.html")    
+            return render_template("login.html")
         
     else:
         return render_template("login.html")
@@ -46,3 +46,13 @@ def status_401(error):
 
 def status_404(error):
     return "<h1>Page Not Found</h1>", 404
+
+@auth.context_processor
+def inject_menu():
+    #if current_user.is_authenticated:
+    menus = UsuarioService.list_menu()
+    print("menu")
+    print(menus)        
+    return {"menus": menus}
+
+    #return {"menus": []}
