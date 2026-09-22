@@ -20,7 +20,14 @@ def create_app():
     app.register_blueprint(main)
     app.register_blueprint(auth)
     app.register_blueprint(usuarios)
+    
     app.register_error_handler(401, status_401)
     app.register_error_handler(404, status_404)
+    
+    @app.context_processor
+    def inject_menu():
+        from app.services.usuario_service import UsuarioService
+        menus = UsuarioService.list_menu()
+        return {"menus": menus}
     
     return app
