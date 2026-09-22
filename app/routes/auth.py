@@ -46,13 +46,3 @@ def status_401(error):
 
 def status_404(error):
     return "<h1>Page Not Found</h1>", 404
-
-@auth.context_processor
-def inject_menu():
-    #if current_user.is_authenticated:
-    menus = UsuarioService.list_menu()
-    print("menu")
-    print(menus)        
-    return {"menus": menus}
-
-    #return {"menus": []}
