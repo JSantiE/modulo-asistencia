@@ -16,10 +16,12 @@ def create_app():
     from app.routes.auth import auth, status_401, status_404
     from app.routes.main import main
     from app.routes.usuarios import usuarios
+    from app.routes.perfiles import perfiles
         
     app.register_blueprint(main)
     app.register_blueprint(auth)
     app.register_blueprint(usuarios)
+    app.register_blueprint(perfiles)
     
     app.register_error_handler(401, status_401)
     app.register_error_handler(404, status_404)
