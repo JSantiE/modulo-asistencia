@@ -1,0 +1,112 @@
+{% extends "layout.html" %}
+
+{% block title %}Lista de Perfiles{% endblock %}
+
+{% block body %}
+    <h1>Listado de Perfiles</h1>
+
+    <div class="contenedor-tabla">
+        <table id="tablaPerfiles" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Perfil</th>
+                    <th>Accion</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for perfil in perfiles %}
+                    <tr>
+                        <td>{{ perfil[0] }}</td>
+                        <td>{{ perfil[1] }}</td>
+                        <td>
+                            <button class="btn btn-primary" onclick="editarPerfil(this)">Editar</button>
+                            <button class="btn btn-danger" onclick="eliminarPerfil(this)">Eliminar</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Datos del Perfil</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Perfil:</label>
+                        <input type="text" class="form-control" id="perfil-nombre">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary">Guardar</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function editarPerfil(button) {
+            const row = button.closest('tr');
+            const perfilId = row.cells[0].textContent;
+
+            fetch("/perfiles/get_perfil",{
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ perfil_id: perfilId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('perfil-nombre').value = data.perfil.perfil;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+            const elementoModal = document.getElementById('exampleModal');
+            const miModal = bootstrap.Modal.getOrCreateInstance(elementoModal);
+
+            miModal.show();
+        }
+
+        function eliminarPerfil(button) {
+            const row = button.closest('tr');
+            const perfilId = row.cells[0].textContent;
+
+            if (confirm("¿Está seguro de que desea eliminar este perfil?")) {
+                fetch("/perfiles/delete_perfil", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ perfil_id: perfilId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        row.remove();
+                        alert("Perfil eliminado correctamente.");
+                    } else {
+                        alert("Error al eliminar el perfil.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+        }
+    </script>
+
+{% endblock %}
