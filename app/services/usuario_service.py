@@ -8,7 +8,6 @@ class UsuarioService():
         try:
             connection = get_connection()
             with connection.cursor() as cursor:
-                #query = "SELECT id, usuario, contrasena_hash, nombres FROM usuario WHERE usuario = '{}'".format(user.usuario)
                 cursor.callproc('sp_login_user', (user.usuario,))
                 row = cursor.fetchone()
                 
