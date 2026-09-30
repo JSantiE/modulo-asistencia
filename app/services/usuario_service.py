@@ -76,7 +76,6 @@ class UsuarioService():
                                     user.apellido_paterno,
                                     user.apellido_materno,
                                     user.nombres,
-                                    user.contrasena_hash,
                                     user.perfil_id))
                 connection.commit()
                 return cursor.rowcount
