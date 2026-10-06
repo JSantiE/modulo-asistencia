@@ -14,11 +14,21 @@ def list():
         empresa_id = current_user.empresa_id
         perfil_id = 0 #current_user.perfil_id
         usuarios_list = UsuarioService.list_users(empresa_id, perfil_id)
-        perfiles_list = PerfilService.list_perfiles(empresa_id)
+        perfiles_list = PerfilService.list_perfiles(int(current_user.empresa_id))
         
-        return render_template('usuarios.html', usuarios=usuarios_list, perfiles=perfiles_list)
+        return render_template('seguridad/usuarios/list.html', usuarios=usuarios_list, perfiles=perfiles_list)
+        
+        #return render_template('usuarios.html', usuarios=usuarios_list, perfiles=perfiles_list)
     except Exception as ex:
-        return render_template('usuarios.html', usuarios=[], perfiles=[])
+        return render_template('seguridad/usuarios/list.html', usuarios=[], perfiles=[])
+
+@usuarios.route('/usuarios/datos', methods=['POST'])
+@login_required
+def datos():
+    id = request.form.get('id')
+    user = UsuarioService.get_user_by_id(int(id))
+    perfiles_list = PerfilService.list_perfiles(int(current_user.empresa_id))
+    return render_template("seguridad/usuarios/formulario.html", user=user, perfiles=perfiles_list)
 
 @usuarios.route('/usuarios/create', methods=['POST'])
 def create():
