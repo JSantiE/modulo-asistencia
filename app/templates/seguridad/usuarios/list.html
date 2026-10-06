@@ -1,0 +1,233 @@
+{% extends "layout.html" %}
+
+{% block title %}Lista de Usuarios{% endblock %}
+
+{% block body %}
+    <h1>Listado de Usuarios</h1>
+
+    <button class="btn btn-primary" onclick="nuevoUsuario()"> Nuevo</button>
+
+    <div class="contenedor-tabla">
+        <table id="tablaUsuarios" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Apellidos y Nombres</th>
+                    <th>Usuario</th>
+                    <th>Perfil</th>
+                    <th>Accion</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                    <tr>
+                        <td>{{ usuario[0] }}</td>
+                        <td>{{ usuario[2] }}</td>
+                        <td>{{ usuario[3] }}</td>
+                        <td>{{ usuario[4] }}</td>
+                        <td>
+                            <form action="/usuarios/datos" method="POST">
+                                <input type="hidden" name="id" value="{{ usuario[0] }}">
+                                <button class="btn btn-primary" type="submit">Editar</button>
+                            </form>                            
+                            <button class="btn btn-danger" onclick="eliminar(this)">Eliminar</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Datos del Usuario</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Apellido Paterno:</label>
+                        <input type="text" class="form-control" id="apellido-paterno">
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Apellido Materno:</label>
+                        <input type="text" class="form-control" id="apellido-materno">
+                    </div>
+                    <div>
+                        <label for="message-text" class="col-form-label">Nombres:</label>
+                        <input type="text" class="form-control" id="nombres">
+                    </div>
+                    <div>
+                        <label for="message-text" class="col-form-label">Perfil:</label>
+                        <select class="form-select" aria-label="Default select example" id="perfil-select">
+                            <option value="0" selected>Seleccionar</option>
+                            {% for perfil in perfiles %}
+                                <option value="{{ perfil[0] }}">{{ perfil[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="guardarCambios()">Guardar</button>
+            </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        let id;
+
+        function nuevoUsuario(){
+            limpiartControles();
+            abrirModel();
+        }
+
+        /*function editar(button) {
+            var row = button.closest('tr');
+            var usuarioId = row.cells[0].textContent;
+
+            const response = await fetch('/usuarios/datos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: usuarioId })
+            });
+
+            const html = await response.text();
+        }*/
+
+        function editarUsuario(button) {
+            var row = button.closest('tr');
+            var usuarioId = row.cells[0].textContent;
+            
+            fetch("/usuarios/get_user",{
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ id: usuarioId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                id = usuarioId;
+                document.getElementById('apellido-paterno').value = data.user.apellido_paterno;
+                document.getElementById('apellido-materno').value = data.user.apellido_materno;
+                document.getElementById('nombres').value = data.user.nombres;
+                document.getElementById('perfil-select').value = data.user.perfil_id;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+            abrirModel();
+        }
+
+        function guardarCambios() {
+            
+            if(id > 0){
+                fetch("/usuarios/update", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ 
+                        id: id,
+                        apellido_paterno: document.getElementById('apellido-paterno').value,
+                        apellido_materno: document.getElementById('apellido-materno').value,
+                        nombres: document.getElementById('nombres').value,
+                        perfil_id: document.getElementById('perfil-select').value
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Datos actualizados correctamente.");
+                        location.reload();
+                    } else {
+                        alert("Error al guardar los cambios.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }else{
+                fetch("/usuarios/create", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ 
+                        apellido_paterno: document.getElementById('apellido-paterno').value,
+                        apellido_materno: document.getElementById('apellido-materno').value,
+                        nombres: document.getElementById('nombres').value,
+                        perfil_id: document.getElementById('perfil-select').value
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Usuario agregado correctamente.");
+                        location.reload();
+                    } else {
+                        alert("Error al crear usuario.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+
+        }
+
+        function eliminar(button) {
+            var row = button.closest('tr');
+            var usuarioId = row.cells[0].textContent;
+            
+            if (confirm("¿Está seguro de que desea eliminar este usuario?")) {
+                fetch("/usuarios/delete", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ id: usuarioId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        row.remove();
+                        alert("Usuario eliminado correctamente.");
+                    } else {
+                        alert("Error al eliminar el usuario.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+        }
+
+        function limpiartControles(){
+            id = 0;
+            document.getElementById('apellido-paterno').value = "";
+            document.getElementById('apellido-materno').value = "";
+            document.getElementById('nombres').value = "";
+            document.getElementById('perfil-select').value = 0;
+        }
+
+        function abrirModel(){
+            const elementoModal = document.getElementById('exampleModal');
+            const miModal = bootstrap.Modal.getOrCreateInstance(elementoModal);
+
+            miModal.show();
+        }
+
+    </script>
+{% endblock %}
