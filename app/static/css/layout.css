@@ -65,13 +65,6 @@ body{
     border-radius: 4px;
 }
 
-/*button {
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
-}*/
-
 .div-cifrado{
     display: flex;
     justify-content: center;
@@ -102,4 +95,51 @@ td {
     border: 1px solid black;
     padding: 8px 12px;
     text-align: center;
+}
+
+/************************************************/
+.menu-tree {
+    width: 100%;
+    max-width: 500px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 10px;
+    background-color: #fff;
+}
+
+.menu-item {
+    display: block;
+    padding: 6px 8px;
+}
+
+.menu-item label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.menu-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.menu-padre {
+    font-weight: 600;
+}
+
+.menu-hijos {
+    margin-left: 28px;
+    border-left: 1px solid #ccc;
+    padding-left: 10px;
+}
+
+.menu-hijos .menu-item {
+    font-weight: normal;
+}
+
+.flecha {
+    font-size: 11px;
+    color: #666;
 }
