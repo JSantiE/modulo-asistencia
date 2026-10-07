@@ -28,7 +28,8 @@ def datos():
     id = request.form.get('id')
     user = UsuarioService.get_user_by_id(int(id))
     perfiles_list = PerfilService.list_perfiles(int(current_user.empresa_id))
-    return render_template("seguridad/usuarios/formulario.html", user=user, perfiles=perfiles_list)
+    menu_list = UsuarioService.list_menu()
+    return render_template("seguridad/usuarios/formulario.html", user=user.to_dict(), perfiles=perfiles_list, menus=menu_list)
 
 @usuarios.route('/usuarios/create', methods=['POST'])
 def create():
