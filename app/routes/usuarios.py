@@ -17,8 +17,6 @@ def list():
         perfiles_list = PerfilService.list_perfiles(int(current_user.empresa_id))
         
         return render_template('seguridad/usuarios/list.html', usuarios=usuarios_list, perfiles=perfiles_list)
-        
-        #return render_template('usuarios.html', usuarios=usuarios_list, perfiles=perfiles_list)
     except Exception as ex:
         return render_template('seguridad/usuarios/list.html', usuarios=[], perfiles=[])
 
