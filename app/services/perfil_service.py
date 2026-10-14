@@ -1,3 +1,4 @@
+from flask import json
 from app.database.db import get_connection
 from app.models.perfil import Perfil
 
@@ -31,14 +32,15 @@ class PerfilService():
             raise Exception(f"Error al listar los perfiles: {ex}")
         
     @classmethod
-    def create_perfil(self, perfil):
+    def create_perfil(self, perfil, menu):
         try:
             connection = get_connection()
             with connection.cursor() as cursor:
                 cursor.callproc('sp_create_perfil', 
                                 (
                                     perfil.empresa_id,
-                                    perfil.perfil                                    
+                                    perfil.perfil,
+                                    json.dumps(menu)                                 
                                 ))
                 connection.commit()
         except Exception as ex:

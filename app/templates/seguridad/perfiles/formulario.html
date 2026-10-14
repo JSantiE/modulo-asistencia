@@ -1,0 +1,126 @@
+{% extends "layout.html" %}
+
+{% block title %}
+
+    {{ 'Datos de Perfil' if perfil else 'Nuevo Perfil' }}
+
+{% endblock %}
+
+{% block body %}
+
+    <h1>
+        {{ 'Datos de Perfil' if perfil else 'Nuevo Perfil' }}
+    </h1>
+
+    <form class="form" action="/perfiles/datos" method="POST">
+        <div>
+            <div class="mb-3">
+                <label for="perfil-nombre" class="col-form-label">Perfil:</label>
+                <input type="text" class="form-control" id="perfil-nombre" value="{{ perfil.perfil }}" name="perfil_nombre">
+            </div>
+        </div>
+        <div>
+            <div class="menu-tree">
+                {% for menu in menus if menu[4] == 1 %}
+                    <div class="menu-item menu-padre" data-id="{{ menu[0] }}">
+                        <label>
+                             <input type="checkbox" class="checkbox-menu" value="{{ menu[0] }}">
+                            <span class="flecha">▼</span>
+                            {{ menu[1] }}
+                        </label>
+
+                        <div class="menu-hijos">
+                            {% for submenu in menus if submenu[4] == menu[0] %}
+                                <label class="menu-item" data-id="{{ submenu[0] }}" data-padre="{{ submenu[4] }}">
+                                    <input type="checkbox" class="checkbox-menu checkbox-hijo" value="{{ submenu[0] }}">
+                                    {{ submenu[1] }}
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary" onclick="guardar()">Guardar</button>
+            <button type="button" class="btn btn-secondary" onclick="window.location.href='/perfiles'">Cancelar</button>
+        </div>
+    </form>
+
+{% endblock %}
+
+{% block scripts %}
+
+    <script>
+        function guardar() {
+            const seleccionados = [];
+
+            document.querySelectorAll('.checkbox-menu:checked')
+                .forEach(checkbox => {
+                    seleccionados.push(parseInt(checkbox.value));
+                });
+
+            alert(seleccionados)
+        }
+
+        document.querySelectorAll('.menu-padre > label input[type="checkbox"]')
+            .forEach(checkboxPadre => {
+
+                checkboxPadre.addEventListener('change', function () {
+
+                    const padre = this.closest('.menu-padre');
+
+                    const hijos = padre.querySelectorAll(
+                        '.checkbox-hijo'
+                    );
+
+                    hijos.forEach(hijo => {
+                        hijo.checked = this.checked;
+                        hijo.indeterminate = false;
+                    });
+                });
+            });
+
+        document.querySelectorAll('.checkbox-hijo')
+            .forEach(checkboxHijo => {
+
+                checkboxHijo.addEventListener('change', function () {
+
+                    const padre = this.closest('.menu-padre');
+
+                    const checkboxPadre = padre.querySelector(
+                        ':scope > label .checkbox-menu'
+                    );
+
+                    const hijos = padre.querySelectorAll(
+                        '.checkbox-hijo'
+                    );
+
+                    const cantidadMarcados = [...hijos]
+                        .filter(hijo => hijo.checked)
+                        .length;
+
+
+                    if (cantidadMarcados === hijos.length) {
+
+                        // Todos seleccionados
+                        checkboxPadre.checked = true;
+                        checkboxPadre.indeterminate = false;
+
+                    } else if (cantidadMarcados === 0) {
+
+                        // Ninguno seleccionado
+                        checkboxPadre.checked = false;
+                        checkboxPadre.indeterminate = false;
+
+                    } else {
+
+                        // Algunos seleccionados
+                        checkboxPadre.checked = false;
+                        checkboxPadre.indeterminate = true;
+                    }
+                });
+            });
+    </script>
+
+{% endblock %}
