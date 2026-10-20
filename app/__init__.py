@@ -28,8 +28,8 @@ def create_app():
     
     @app.context_processor
     def inject_menu():
-        from app.services.usuario_service import UsuarioService
-        menus = UsuarioService.list_menu()
+        from app.services.menu_service import MenuService
+        menus = MenuService.list_menu()
         return {"menus": menus}
     
     return app
