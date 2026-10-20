@@ -92,15 +92,3 @@ class UsuarioService():
                 return cursor.rowcount
         except Exception as ex:
             raise Exception(f"Error al eliminar el usuario: {ex}")
-        
-    @classmethod
-    def list_menu(self):
-        try:
-            connection = get_connection()
-            with connection.cursor() as cursor:
-                cursor.callproc('sp_list_menu')
-                rows = cursor.fetchall()
-                
-                return rows
-        except Exception as ex:
-            raise Exception(f"Error al listar el menú: {ex}")
