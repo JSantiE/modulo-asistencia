@@ -40,14 +40,14 @@ class PerfilService():
                                 (
                                     perfil.empresa_id,
                                     perfil.perfil,
-                                    json.dumps(menu)                                 
+                                    json.dumps(menu)
                                 ))
                 connection.commit()
         except Exception as ex:
             raise Exception(f"Error al crear el perfil: {ex}")
         
     @classmethod
-    def update_perfil(self, perfil):
+    def update_perfil(self, perfil, menu):
         try:
             connection = get_connection()
             with connection.cursor() as cursor:
@@ -55,7 +55,8 @@ class PerfilService():
                                 (
                                     perfil.id,
                                     perfil.empresa_id,
-                                    perfil.perfil                                    
+                                    perfil.perfil,
+                                    json.dumps(menu)
                                 ))
                 connection.commit()
         except Exception as ex:
@@ -71,3 +72,17 @@ class PerfilService():
                 return cursor.rowcount
         except Exception as ex:
             raise Exception(f"Error al eliminar el perfil: {ex}")
+        
+    @classmethod
+    def list_menus_by_perfil(self, perfil_id, empresa_id):
+        try:
+            connection = get_connection()
+            with connection.cursor() as cursor:
+                cursor.callproc('sp_list_menus_by_perfil', (perfil_id, empresa_id))
+                rows = cursor.fetchall()
+                
+                menus_seleccionados = [row[0] for row in rows]
+                
+                return menus_seleccionados
+        except Exception as ex:
+            raise Exception(f"Error al listar los menús por perfil: {ex}")
