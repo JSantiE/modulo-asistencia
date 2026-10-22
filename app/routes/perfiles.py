@@ -9,8 +9,7 @@ perfiles = (Blueprint('perfiles', __name__))
 @perfiles.route('/perfiles')
 @login_required
 def list():
-    empresa_id = current_user.empresa_id
-    perfiles_list = PerfilService.list_perfiles(empresa_id)
+    perfiles_list = PerfilService.list_perfiles(int(current_user.empresa_id))
     return render_template('seguridad/perfiles/list.html', perfiles=perfiles_list)
 
 @perfiles.route('/perfiles/get_perfil', methods=['POST'])
