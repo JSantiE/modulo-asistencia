@@ -40,15 +40,15 @@
 
         function eliminar(button) {
             const row = button.closest('tr');
-            const perfilId = row.cells[0].textContent;
+            const id = row.cells[0].textContent;
 
             if (confirm("¿Está seguro de que desea eliminar este perfil?")) {
-                fetch("/perfiles/delete_perfil", {
+                fetch("/perfiles/delete", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify({ perfil_id: perfilId })
+                    body: JSON.stringify({ id: id })
                 })
                 .then(response => response.json())
                 .then(data => {

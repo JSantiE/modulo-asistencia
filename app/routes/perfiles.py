@@ -38,28 +38,24 @@ def create():
 @perfiles.route('/perfiles/editar/<int:id>', methods=["GET", "POST"])
 @login_required
 def edit(id):
+    if request.method == 'POST':
+        perfil = Perfil(id, request.form.get('perfil'), current_user.empresa_id)
+        menu_seleccionados = [
+            int(id_menu)
+            for id_menu in request.form.getlist('menus')
+        ]
+        PerfilService.update_perfil(perfil, menu_seleccionados)    
+        return redirect(url_for('perfiles.list'))
+        
     perfil = PerfilService.get_perfil_by_id(id)
-    menu_list = MenuService.list_menu()
-    menu_perfil = PerfilService.list_menus_by_perfil(id, current_user.empresa_id)
-    
-    if request.method == 'GET':        
-        return render_template("seguridad/perfiles/formulario.html", perfil=perfil.to_dict(), menus=menu_list, menu_perfil=menu_perfil)
-    
-    perfil = Perfil(id, request.form.get('perfil'), current_user.empresa_id)
-    menu_seleccionados = [
-        int(id_menu)
-        for id_menu in request.form.getlist('menus')
-    ]
-    
-    print('Menu perfil:', menu_perfil)
-    print('Menu seleccionados:', menu_seleccionados)
-    #print('Menu adicional:', menu_adicional)
-    
-    PerfilService.update_perfil(perfil, menu_seleccionados)
-    return redirect(url_for('perfiles.list'))
+    menus = MenuService.list_menu()
+    menus_perfil = PerfilService.list_menus_by_perfil(id, current_user.empresa_id)
+          
+    return render_template("seguridad/perfiles/formulario.html", perfil=perfil.to_dict(), menus=menus, menus_perfil=menus_perfil)
 
 @perfiles.route('/perfiles/delete', methods=['POST'])
+@login_required
 def delete():
     req = request.get_json()
-    perfil = PerfilService.delete_perfil(int(req.get('id')), current_user.empresa_id)
-    return render_template('seguridad/perfiles/list.html')
+    PerfilService.delete_perfil(int(req.get('id')), current_user.empresa_id)
+    return redirect(url_for('perfiles.list'))

@@ -29,7 +29,7 @@
                                 name="menus" 
                                 class="checkbox-menu" 
                                 value="{{ menu[0] }}"
-                                {% if menu[0] in menu_perfil %} checked {% endif %}>
+                                {% if menu[0] in menus_perfil %} checked {% endif %}>
                             <span class="flecha">▼</span>
                             {{ menu[1] }}
                         </label>
@@ -42,7 +42,7 @@
                                         name="menus" 
                                         class="checkbox-menu checkbox-hijo" 
                                         value="{{ submenu[0] }}"
-                                        {% if submenu[0] in menu_perfil %} checked {% endif %}>
+                                        {% if submenu[0] in menus_perfil %} checked {% endif %}>
                                     {{ submenu[1] }}
                                 </label>
                             {% endfor %}
