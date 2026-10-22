@@ -92,3 +92,28 @@ class UsuarioService():
                 return cursor.rowcount
         except Exception as ex:
             raise Exception(f"Error al eliminar el usuario: {ex}")
+        
+    @classmethod
+    def change_password(self, user_id, empresa_id, new_password):
+        try:
+            connection = get_connection()
+            with connection.cursor() as cursor:
+                cursor.callproc('sp_change_password', (user_id, empresa_id, new_password))
+                connection.commit()
+                return cursor.rowcount
+        except Exception as ex:
+            raise Exception(f"Error al cambiar la contraseña del usuario: {ex}")
+        
+    @classmethod
+    def list_menu_by_user(self, user_id, empresa_id):
+        try:
+            connection = get_connection()
+            with connection.cursor() as cursor:
+                cursor.callproc('sp_list_menu_by_user', (user_id, empresa_id))
+                rows = cursor.fetchall()
+                
+                menus_seleccionados = [row[0] for row in rows]
+                                
+                return menus_seleccionados
+        except Exception as ex:
+            raise Exception(f"Error al listar los menús del usuario: {ex}")

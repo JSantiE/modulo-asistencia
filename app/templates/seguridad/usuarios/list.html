@@ -5,7 +5,7 @@
 {% block body %}
     <h1>Listado de Usuarios</h1>
 
-    <button class="btn btn-primary" onclick="nuevoUsuario()"> Nuevo</button>
+    <a href="{{ url_for('usuarios.create') }}" class="btn btn-primary">Nuevo Usuario</a>
 
     <div class="contenedor-tabla">
         <table id="tablaUsuarios" class="table table-striped table-bordered">
@@ -26,10 +26,7 @@
                         <td>{{ usuario[3] }}</td>
                         <td>{{ usuario[4] }}</td>
                         <td>
-                            <form action="/usuarios/datos" method="POST">
-                                <input type="hidden" name="id" value="{{ usuario[0] }}">
-                                <button class="btn btn-primary" type="submit">Editar</button>
-                            </form>                            
+                            <a class="btn btn-primary" href="{{ url_for('usuarios.edit', id=usuario[0]) }}">Editar</a>
                             <button class="btn btn-danger" onclick="eliminar(this)">Eliminar</button>
                         </td>
                     </tr>
@@ -88,21 +85,6 @@
             limpiartControles();
             abrirModel();
         }
-
-        /*function editar(button) {
-            var row = button.closest('tr');
-            var usuarioId = row.cells[0].textContent;
-
-            const response = await fetch('/usuarios/datos', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ id: usuarioId })
-            });
-
-            const html = await response.text();
-        }*/
 
         function editarUsuario(button) {
             var row = button.closest('tr');
