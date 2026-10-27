@@ -1,12 +1,18 @@
 {% extends "layout.html" %}
 
-{% block title %}Datos de Usuario{% endblock %}
+{% block title %}
+
+    {{ 'Datos de Usuario' if user else 'Nuevo Usuario' }}
+
+{% endblock %}
 
 {% block body %}
 
-    <h1>Datos de Usuario</h1>
+    <h1>
+        {{ 'Datos de Usuario' if user else 'Nuevo Usuario' }}
+    </h1>
 
-    <form class="form" action="/usuarios/datos" method="POST">
+    <form class="form" method="POST">
         <div>
             <div class="mb-3">
                 <label for="apellido-paterno" class="col-form-label">Apellido Paterno:</label>
@@ -35,7 +41,11 @@
                 {% for menu in menus if menu[4] == 1 %}
                     <div class="menu-item menu-padre" data-id="{{ menu[0] }}">
                         <label>
-                             <input type="checkbox" class="checkbox-menu" value="{{ menu[0] }}">
+                             <input 
+                             type="checkbox" 
+                             class="checkbox-menu" 
+                             value="{{ menu[0] }}"
+                             {% if menu[0] in menus_usuario %} checked {% endif %}>
                             <span class="flecha">▼</span>
                             {{ menu[1] }}
                         </label>
@@ -43,7 +53,11 @@
                         <div class="menu-hijos">
                             {% for submenu in menus if submenu[4] == menu[0] %}
                                 <label class="menu-item" data-id="{{ submenu[0] }}" data-padre="{{ submenu[4] }}">
-                                    <input type="checkbox" class="checkbox-menu checkbox-hijo" value="{{ submenu[0] }}">
+                                    <input 
+                                    type="checkbox" 
+                                    class="checkbox-menu checkbox-hijo" 
+                                    value="{{ submenu[0] }}"
+                                    {% if submenu[0] in menus_usuario %} checked {% endif %}>
                                     {{ submenu[1] }}
                                 </label>
                             {% endfor %}
@@ -62,17 +76,7 @@
 {% block scripts %}
 
     <script>
-        function guardar() {
-            const seleccionados = [];
-
-            document.querySelectorAll('.checkbox-menu:checked')
-                .forEach(checkbox => {
-                    seleccionados.push(parseInt(checkbox.value));
-                });
-
-            alert(seleccionados)
-        }
-
+        
         document.querySelectorAll('.menu-padre > label input[type="checkbox"]')
             .forEach(checkboxPadre => {
 
@@ -131,6 +135,33 @@
                     }
                 });
             });
+
+        function sincronizarPadres() {
+            document.querySelectorAll('.menu-padre').forEach(padre => {
+                const checkboxPadre = padre.querySelector(
+                    ':scope > label .checkbox-menu'
+                );
+
+                const hijos = [...padre.querySelectorAll(
+                    ':scope > .menu-hijos .checkbox-hijo'
+                )];
+
+                const marcados = hijos.filter(hijo => hijo.checked).length;
+
+                if (hijos.length > 0 && marcados === hijos.length) {
+                    checkboxPadre.checked = true;
+                    checkboxPadre.indeterminate = false;
+                } else if (marcados > 0) {
+                    checkboxPadre.checked = false;
+                    checkboxPadre.indeterminate = true;
+                } else {
+                    checkboxPadre.checked = false;
+                    checkboxPadre.indeterminate = false;
+                }
+            });
+        }
+
+        sincronizarPadres();
     </script>
 
 {% endblock %}

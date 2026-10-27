@@ -33,7 +33,11 @@ def create():
     usuario_generado = generar_usuario(request.form.get('apellido_paterno'), request.form.get('apellido_materno'), request.form.get('nombres'))
     contrasena_generada = generate_password_hash(usuario_generado);
     user = Usuario(0, usuario_generado, contrasena_generada, request.form.get('nombres'), current_user.empresa_id, request.form.get('apellido_paterno'), request.form.get('apellido_materno'), request.form.get('perfil_id'), None)
-    UsuarioService.create_user(user)
+    menu_seleccionados = [
+        int(id_menu)
+        for id_menu in request.form.getlist('menus')
+    ]
+    UsuarioService.create_user(user, menu_seleccionados)
     
     return redirect(url_for('usuarios.list'))
 
@@ -41,16 +45,21 @@ def create():
 @login_required
 def edit(id):
     if request.method == 'POST':
-        user = Usuario(int(id), None, None, request.form.get('nombres'), current_user.empresa_id, request.form.get('apellido_paterno'), request.form.get('apellido_materno'), request.form.get('perfil_id'), None)
-        UsuarioService.update_user(user)    
+        usuario = Usuario(int(id), None, None, request.form.get('nombres'), current_user.empresa_id, request.form.get('apellido_paterno'), request.form.get('apellido_materno'), request.form.get('perfil_id'), None)
+        menu_seleccionados = [
+                    int(id_menu)
+                    for id_menu in request.form.getlist('menus')
+                ]
+        UsuarioService.update_user(usuario, menu_seleccionados)
         return redirect(url_for('usuarios.list'))
         
-    user = UsuarioService.get_user_by_id(id)
+    usuario = UsuarioService.get_user_by_id(id)
+    perfiles = PerfilService.list_perfiles(int(current_user.empresa_id))
     menus = MenuService.list_menu()
-    perfiles_list = PerfilService.list_perfiles(int(current_user.empresa_id))
+    menus_usuario = UsuarioService.list_menu_by_user(id, int(current_user.empresa_id))
     
           
-    return render_template("seguridad/usuarios/formulario.html", user=user.to_dict(), perfiles=perfiles_list, menus=menus)
+    return render_template("seguridad/usuarios/formulario.html", user=usuario.to_dict(), perfiles=perfiles, menus=menus, menus_usuario=menus_usuario)
 
 
 

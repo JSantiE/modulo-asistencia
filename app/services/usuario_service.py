@@ -1,3 +1,4 @@
+import json
 from app.database.db import get_connection
 from app.models.usuario import Usuario
 
@@ -47,7 +48,7 @@ class UsuarioService():
             raise Exception(f"Error al listar los usuarios: {ex}")
         
     @classmethod
-    def create_user(self, user):
+    def create_user(self, user, menu):
         try:
             connection = get_connection()
             with connection.cursor() as cursor:
@@ -58,14 +59,15 @@ class UsuarioService():
                                     user.apellido_materno,
                                     user.nombres,
                                     user.contrasena_hash,
-                                    user.perfil_id))
+                                    user.perfil_id,
+                                    json.dumps(menu)))
                 connection.commit()
                 return cursor.lastrowid
         except Exception as ex:
             raise Exception(f"Error al crear el usuario: {ex}")
         
     @classmethod
-    def update_user(self, user):
+    def update_user(self, user, menu):
         try:
             connection = get_connection()
             with connection.cursor() as cursor:
@@ -76,7 +78,8 @@ class UsuarioService():
                                     user.apellido_paterno,
                                     user.apellido_materno,
                                     user.nombres,
-                                    user.perfil_id))
+                                    user.perfil_id,
+                                    json.dumps(menu)))
                 connection.commit()
                 return cursor.rowcount
         except Exception as ex:
@@ -109,7 +112,7 @@ class UsuarioService():
         try:
             connection = get_connection()
             with connection.cursor() as cursor:
-                cursor.callproc('sp_list_menu_by_user', (user_id, empresa_id))
+                cursor.callproc('sp_list_menus_by_usuario', (user_id, empresa_id))
                 rows = cursor.fetchall()
                 
                 menus_seleccionados = [row[0] for row in rows]
