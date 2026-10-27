@@ -45,11 +45,15 @@ def create():
 @login_required
 def edit(id):
     if request.method == 'POST':
-        usuario = Usuario(int(id), None, None, request.form.get('nombres'), current_user.empresa_id, request.form.get('apellido_paterno'), request.form.get('apellido_materno'), request.form.get('perfil_id'), None)
+        usuario = Usuario(int(id), None, None, request.form.get('nombres'), current_user.empresa_id, request.form.get('apellido_paterno'), request.form.get('apellido_materno'), request.form.get('perfil'), None)
         menu_seleccionados = [
                     int(id_menu)
                     for id_menu in request.form.getlist('menus')
                 ]
+        print('usuario')
+        print(usuario.to_dict())
+        print('menu_seleccionados')
+        print(menu_seleccionados)
         UsuarioService.update_user(usuario, menu_seleccionados)
         return redirect(url_for('usuarios.list'))
         
