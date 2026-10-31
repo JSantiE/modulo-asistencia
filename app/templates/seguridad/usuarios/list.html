@@ -5,7 +5,8 @@
 {% block body %}
     <h1>Listado de Usuarios</h1>
 
-    <a href="{{ url_for('usuarios.create') }}" class="btn btn-primary">Nuevo Usuario</a>
+    <!--<a href="{{ url_for('usuarios.create') }}" class="btn btn-primary">Nuevo Usuario</a>-->
+    <button class="btn btn-primary" onclick="nuevoUsuario()">Nuevo Usuario</button>
 
     <div class="contenedor-tabla">
         <table id="tablaUsuarios" class="table table-striped table-bordered">
@@ -86,86 +87,32 @@
             abrirModel();
         }
 
-        function editarUsuario(button) {
-            var row = button.closest('tr');
-            var usuarioId = row.cells[0].textContent;
+        function guardarCambios() {
             
-            fetch("/usuarios/get_user",{
+            fetch("/usuarios/create", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ id: usuarioId })
+                body: JSON.stringify({ 
+                    apellido_paterno: document.getElementById('apellido-paterno').value,
+                    apellido_materno: document.getElementById('apellido-materno').value,
+                    nombres: document.getElementById('nombres').value,
+                    perfil_id: document.getElementById('perfil-select').value
+                })
             })
             .then(response => response.json())
             .then(data => {
-                id = usuarioId;
-                document.getElementById('apellido-paterno').value = data.user.apellido_paterno;
-                document.getElementById('apellido-materno').value = data.user.apellido_materno;
-                document.getElementById('nombres').value = data.user.nombres;
-                document.getElementById('perfil-select').value = data.user.perfil_id;
+                if (data.success) {
+                    alert("Usuario agregado correctamente.");
+                    location.reload();
+                } else {
+                    alert("Error al crear usuario.");
+                }
             })
             .catch(error => {
                 console.error('Error:', error);
             });
-
-            abrirModel();
-        }
-
-        function guardarCambios() {
-            
-            if(id > 0){
-                fetch("/usuarios/update", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ 
-                        id: id,
-                        apellido_paterno: document.getElementById('apellido-paterno').value,
-                        apellido_materno: document.getElementById('apellido-materno').value,
-                        nombres: document.getElementById('nombres').value,
-                        perfil_id: document.getElementById('perfil-select').value
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert("Datos actualizados correctamente.");
-                        location.reload();
-                    } else {
-                        alert("Error al guardar los cambios.");
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            }else{
-                fetch("/usuarios/create", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ 
-                        apellido_paterno: document.getElementById('apellido-paterno').value,
-                        apellido_materno: document.getElementById('apellido-materno').value,
-                        nombres: document.getElementById('nombres').value,
-                        perfil_id: document.getElementById('perfil-select').value
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert("Usuario agregado correctamente.");
-                        location.reload();
-                    } else {
-                        alert("Error al crear usuario.");
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            }
 
         }
 

@@ -48,7 +48,7 @@ class UsuarioService():
             raise Exception(f"Error al listar los usuarios: {ex}")
         
     @classmethod
-    def create_user(self, user, menu):
+    def create_user(self, user):
         try:
             connection = get_connection()
             with connection.cursor() as cursor:
@@ -58,9 +58,9 @@ class UsuarioService():
                                     user.apellido_paterno,
                                     user.apellido_materno,
                                     user.nombres,
+                                    user.usuario,
                                     user.contrasena_hash,
-                                    user.perfil_id,
-                                    json.dumps(menu)))
+                                    user.perfil_id))
                 connection.commit()
                 return cursor.lastrowid
         except Exception as ex:
